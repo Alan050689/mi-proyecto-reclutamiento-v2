@@ -5,16 +5,16 @@ import { busquedasBase } from '@/data/busquedas';
 import { useState, useEffect } from 'react';
 
 export default function EvaluarCandidatoPorBusqueda() {
-  const { id, candidatoId } = useParams() as { id: string; candidatoId: string };
+  const { busquedaId, candidatoId } = useParams() as { busquedaId: string; candidatoId: string };
   const router = useRouter();
 
-  const busqueda = busquedasBase.find((b) => b.id === id);
+  const busqueda = busquedasBase.find((b) => b.id === busquedaId);
   const candidato = busqueda?.candidatos?.find((c) => c.id === candidatoId) ?? null;
 
   const [entrevistador, setEntrevistador] = useState('Alan');
   const [puntajes, setPuntajes] = useState<{ [key: string]: number }>({});
 
-  const storageKey = `evaluacion-${id}-${candidatoId}-${entrevistador}`;
+  const storageKey = `evaluacion-${busquedaId}-${candidatoId}-${entrevistador}`;
 
   useEffect(() => {
     const saved = localStorage.getItem(storageKey);

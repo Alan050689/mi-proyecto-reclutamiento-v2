@@ -6,7 +6,7 @@ const getNombresEntrevistadores = (ids) =>
   ids.map(id => usuarios.find(u => u.id === id)?.nombre).filter(Boolean).join(', ');
 
 export default function DetalleBusquedaPage({ params }) {
-  const busqueda = busquedasBase.find(b => b.id === params.id);
+  const busqueda = busquedasBase.find(b => b.id === params.busquedaId);
 
   if (!busqueda) {
     return <main className="p-8 text-red-600">Búsqueda no encontrada</main>;
