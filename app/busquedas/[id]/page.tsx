@@ -5,7 +5,11 @@ import Link from 'next/link';
 const getNombresEntrevistadores = (ids: string[]) =>
   ids.map(id => usuarios.find(u => u.id === id)?.nombre).filter(Boolean).join(', ');
 
-export default function DetalleBusquedaPage({ params }: { params: { id: string } }) {
+interface Props {
+  params: { id: string }
+}
+
+export default function DetalleBusquedaPage({ params }: Props) {
   const busqueda = busquedasBase.find(b => b.id === params.id);
 
   if (!busqueda) {
@@ -54,3 +58,4 @@ export default function DetalleBusquedaPage({ params }: { params: { id: string }
     </main>
   );
 }
+
