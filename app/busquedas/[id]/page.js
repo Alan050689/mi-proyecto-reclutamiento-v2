@@ -2,14 +2,10 @@ import { busquedasBase } from '../../../data/busquedas';
 import { usuarios } from '../../../data/usuarios';
 import Link from 'next/link';
 
-const getNombresEntrevistadores = (ids: string[]) =>
+const getNombresEntrevistadores = (ids) =>
   ids.map(id => usuarios.find(u => u.id === id)?.nombre).filter(Boolean).join(', ');
 
-interface Props {
-  params: { id: string }
-}
-
-export default function DetalleBusquedaPage({ params }: Props) {
+export default function DetalleBusquedaPage({ params }) {
   const busqueda = busquedasBase.find(b => b.id === params.id);
 
   if (!busqueda) {
@@ -58,4 +54,3 @@ export default function DetalleBusquedaPage({ params }: Props) {
     </main>
   );
 }
-
