@@ -1,16 +1,28 @@
 // data/busquedas.ts
 
-import { Competencia } from '../app/configuracion';
-import { Candidato } from './candidatos';
+// Definición de tipos locales
+export type Competencia = {
+  id: string;
+  nombre: string;
+  peso: number;
+};
+
+export type Candidato = {
+  id: string;
+  nombre: string;
+  email?: string;
+  telefono?: string;
+};
 
 export type Busqueda = {
   id: string;
   nombre: string;
   competencias: Competencia[];
-  entrevistadores: string[]; // ahora son IDs de usuario
+  entrevistadores: string[]; // IDs de usuario
   candidatos: Candidato[];
 };
 
+// Datos de ejemplo (mock)
 export const busquedasBase: Busqueda[] = [
   {
     id: 'mkt-sr',
@@ -23,8 +35,8 @@ export const busquedasBase: Busqueda[] = [
       { id: 'com5', nombre: 'Curiosidad por la innovación', peso: 1 },
     ],
     candidatos: [
-      { id: '1', nombre: 'Juan Pérez' },
-      { id: '2', nombre: 'Ana Torres' },
+      { id: '1', nombre: 'Juan Pérez', email: 'juan@email.com', telefono: '555-1234' },
+      { id: '2', nombre: 'Ana Torres', email: 'ana@email.com', telefono: '555-5678' },
     ],
   },
   {
@@ -38,9 +50,9 @@ export const busquedasBase: Busqueda[] = [
       { id: 'com7', nombre: 'Liderazgo', peso: 1.3 },
     ],
     candidatos: [
-      { id: '3', nombre: 'Pedro Romero' },
-      { id: '4', nombre: 'Marina Torres' },
+      { id: '3', nombre: 'Pedro Romero', email: 'pedro@email.com', telefono: '555-9876' },
+      { id: '4', nombre: 'Marina Torres', email: 'marina@email.com', telefono: '555-1111' },
     ],
   },
-  // ...podés sumar más búsquedas y asignar los entrevistadores por ID!
+  // Agregá más búsquedas si necesitás...
 ];

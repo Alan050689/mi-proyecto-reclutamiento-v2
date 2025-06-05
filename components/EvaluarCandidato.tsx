@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import TablaEvaluacion from '@/components/TablaEvaluacion';
-import toast from "react-hot-toast"; // 👈 Import necesario
+import TablaEvaluacion from "@/components/TablaEvaluacion";
+import toast from "react-hot-toast";
+
+// ...resto de tu código igual
 
 const entrevistadores = ['Alan', 'Sofía', 'Martín', 'Lucía'];
 
