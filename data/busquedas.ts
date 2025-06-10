@@ -1,6 +1,5 @@
-// data/busquedas.ts
+import type { Usuario } from "./usuarios"; // opcional, si querés tipos estrictos
 
-// Definición de tipos locales
 export type Competencia = {
   id: string;
   nombre: string;
@@ -22,12 +21,11 @@ export type Busqueda = {
   candidatos: Candidato[];
 };
 
-// Datos de ejemplo (mock)
 export const busquedasBase: Busqueda[] = [
   {
     id: 'mkt-sr',
     nombre: 'Senior Marketing Specialist',
-    entrevistadores: ['u1', 'u2'], // Alan (u1) y Sofía (u2)
+    entrevistadores: ['u1', 'u2'], // Alan (admin) y Elena (admin)
     competencias: [
       { id: 'com1', nombre: 'Pensamiento estratégico', peso: 1.2 },
       { id: 'com2', nombre: 'Comunicación', peso: 1 },
@@ -42,7 +40,7 @@ export const busquedasBase: Busqueda[] = [
   {
     id: 'tl-tech',
     nombre: 'Technical Lead',
-    entrevistadores: ['u1', 'u5'], // Alan (u1) y Darío Copette (u5)
+    entrevistadores: ['u1', 'u3'], // Alan (admin) y Darío Copette (CTO)
     competencias: [
       { id: 'com1', nombre: 'Pensamiento estratégico', peso: 1.2 },
       { id: 'com3', nombre: 'Autonomía', peso: 1 },
@@ -54,5 +52,29 @@ export const busquedasBase: Busqueda[] = [
       { id: '4', nombre: 'Marina Torres', email: 'marina@email.com', telefono: '555-1111' },
     ],
   },
-  // Agregá más búsquedas si necesitás...
+  {
+    id: 'pm',
+    nombre: 'Project Manager',
+    entrevistadores: ['u4'], // Pablo Itman (COO)
+    competencias: [
+      { id: 'com8', nombre: 'Gestión de proyectos', peso: 1.6 },
+    ],
+    candidatos: [
+      // ...
+    ],
+  },
+  {
+    id: 'tl-manager',
+    nombre: 'Technical Leadership Manager',
+    entrevistadores: ['u3', 'u4'], // Darío Copette (CTO), Pablo Itman (COO)
+    competencias: [
+      { id: 'com9', nombre: 'Liderazgo técnico', peso: 1.7 },
+      { id: 'com10', nombre: 'Gestión', peso: 1.3 },
+    ],
+    candidatos: [
+      // ...
+    ],
+  },
+  // ...agregá otras búsquedas según tu organización
 ];
+

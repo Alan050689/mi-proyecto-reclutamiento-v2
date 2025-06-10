@@ -1,10 +1,14 @@
 'use client';
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { busquedasBase } from "../../../data/busquedas";
 import { usuarios } from "../../../data/usuarios"; // ajustá el path si es distinto
 
-export default function Page({ params }) {
-  const busqueda = busquedasBase.find(b => b.id === params.busquedaId);
+export default function Page() {
+  const params = useParams();
+  const busquedaId = params.busquedaId;
+
+  const busqueda = busquedasBase.find(b => b.id === busquedaId);
 
   if (!busqueda) return (
     <main className="p-8">
@@ -46,3 +50,4 @@ export default function Page({ params }) {
     </main>
   );
 }
+

@@ -1,10 +1,9 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from 'react';
 import TablaEvaluacion from "@/components/TablaEvaluacion";
 import toast from "react-hot-toast";
-
-// ...resto de tu código igual
+import { useUser } from "@/app/context/UserContext";
 
 const entrevistadores = ['Alan', 'Sofía', 'Martín', 'Lucía'];
 
@@ -13,7 +12,13 @@ type Props = {
 };
 
 export default function EvaluarCandidato({ candidatoId }: Props) {
-  const [entrevistador, setEntrevistador] = useState('Alan');
+  const { user } = useUser();
+  // Si no hay usuario, no mostramos nada
+  if (!user) return null;
+
+  // El entrevistador es el usuario logueado
+  const entrevistador = user.nombre;
+
   const [puntajes, setPuntajes] = useState<{ [key: string]: number }>({});
   const [competencias, setCompetencias] = useState([
     { id: 'com1', nombre: 'Pensamiento estratégico', peso: 30 },
@@ -35,6 +40,7 @@ export default function EvaluarCandidato({ candidatoId }: Props) {
       const saved = localStorage.getItem(storageKey);
       setPuntajes(saved ? JSON.parse(saved) : {});
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storageKey, mounted]);
 
   useEffect(() => {
@@ -64,21 +70,14 @@ export default function EvaluarCandidato({ candidatoId }: Props) {
 
   return (
     <main className="p-8 max-w-xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Evaluación - Candidato ID: {candidatoId}</h1>
+      <h1 className="text-2xl font-bold mb-4">
+        Evaluación - Candidato ID: {candidatoId}
+      </h1>
 
+      {/* Muestra fijo el entrevistador */}
       <div className="mb-6">
         <label className="font-medium mr-2">Entrevistador:</label>
-        <select
-          value={entrevistador}
-          onChange={(e) => setEntrevistador(e.target.value)}
-          className="border p-2 rounded"
-        >
-          {entrevistadores.map((nombre) => (
-            <option key={nombre} value={nombre}>
-              {nombre}
-            </option>
-          ))}
-        </select>
+        <span className="p-2 bg-gray-100 rounded">{entrevistador}</span>
       </div>
 
       <form className="space-y-6">
@@ -116,7 +115,6 @@ export default function EvaluarCandidato({ candidatoId }: Props) {
         ))}
       </form>
 
-      {/* ⬇️⬇️ BOTÓN DE GUARDAR CON TOAST ⬇️⬇️ */}
       <button
         type="button"
         className="mt-6 px-6 py-2 bg-blue-600 text-white rounded shadow hover:bg-blue-700"
@@ -126,7 +124,6 @@ export default function EvaluarCandidato({ candidatoId }: Props) {
       >
         Guardar evaluación
       </button>
-      {/* ⬆️⬆️ FIN DEL BOTÓN ⬆️⬆️ */}
 
       <section className="mt-10">
         <h2 className="text-xl font-semibold mb-4 text-primary">Resumen de evaluación</h2>
@@ -150,13 +147,15 @@ export default function EvaluarCandidato({ candidatoId }: Props) {
                 <tr key={comp.id}>
                   <td className="border px-4 py-2">{comp.nombre}</td>
                   {entrevistadores.map((nombre) => {
-                    const key = `evaluacion-${candidatoId}-${nombre}`;
-                    const savedData = localStorage.getItem(key);
-                    const puntajesGuardados = savedData ? JSON.parse(savedData) : {};
-                    const valor = nombre === entrevistador
-                      ? puntajes[comp.id]
-                      : puntajesGuardados[comp.id];
-
+                    let valor = '—';
+                    if (mounted) {
+                      const key = `evaluacion-${candidatoId}-${nombre}`;
+                      const savedData = localStorage.getItem(key);
+                      const puntajesGuardados = savedData ? JSON.parse(savedData) : {};
+                      valor = nombre === entrevistador
+                        ? puntajes[comp.id]
+                        : puntajesGuardados[comp.id];
+                    }
                     return (
                       <td key={nombre} className="border px-4 py-2 text-center">
                         {valor !== undefined ? valor : '—'}
@@ -170,14 +169,18 @@ export default function EvaluarCandidato({ candidatoId }: Props) {
               <tr className="font-semibold bg-gray-100">
                 <td className="border px-4 py-2">Promedio ponderado</td>
                 {entrevistadores.map((nombre) => {
-                  const key = `evaluacion-${candidatoId}-${nombre}`;
-                  const saved =
-                    nombre === entrevistador
-                      ? puntajes
-                      : JSON.parse(localStorage.getItem(key) || '{}');
+                  let promedio = '—';
+                  if (mounted) {
+                    const key = `evaluacion-${candidatoId}-${nombre}`;
+                    const saved =
+                      nombre === entrevistador
+                        ? puntajes
+                        : JSON.parse(localStorage.getItem(key) || '{}');
+                    promedio = calcularPromedioPonderado(saved);
+                  }
                   return (
                     <td key={nombre} className="border px-4 py-2 text-center">
-                      {calcularPromedioPonderado(saved)}
+                      {promedio}
                     </td>
                   );
                 })}
@@ -185,18 +188,21 @@ export default function EvaluarCandidato({ candidatoId }: Props) {
               <tr className="font-semibold bg-gray-200">
                 <td className="border px-4 py-2">Valor total</td>
                 {entrevistadores.map((nombre) => {
-                  const key = `evaluacion-${candidatoId}-${nombre}`;
-                  const saved =
-                    nombre === entrevistador
-                      ? puntajes
-                      : JSON.parse(localStorage.getItem(key) || '{}');
-                  const totalValor = competencias.reduce((acc, comp) => {
-                    const v = saved[comp.id] || 0;
-                    return acc + v * comp.peso;
-                  }, 0);
+                  let totalValor = 0;
+                  if (mounted) {
+                    const key = `evaluacion-${candidatoId}-${nombre}`;
+                    const saved =
+                      nombre === entrevistador
+                        ? puntajes
+                        : JSON.parse(localStorage.getItem(key) || '{}');
+                    totalValor = competencias.reduce((acc, comp) => {
+                      const v = saved[comp.id] || 0;
+                      return acc + v * comp.peso;
+                    }, 0);
+                  }
                   return (
                     <td key={nombre} className="border px-4 py-2 text-center">
-                      {totalValor.toFixed(1)}
+                      {totalValor ? totalValor.toFixed(1) : '—'}
                     </td>
                   );
                 })}
